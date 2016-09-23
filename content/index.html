@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Giphy Pi</title>
+  <meta name="description" content="Giphy Pi"/>
+  <meta name="author" content="Peter Fox"/>
+  <meta name="keywords" content="giphy gif raspberry-pi tv">
+
+  <script>
+    // You can also require other files to run in this process
+    window.$ = window.jquery = require('jquery');
+  </script>
+
+  <!-- <script src="https://use.fontawesome.com/a452c9eaa2.js"></script> -->
+
+  <link rel="stylesheet" type="text/css" href="../node_modules/font-awesome/css/font-awesome.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    body {
+        background-color: #000;
+        width: 100%;
+        height: 100%;
+        cursor: none;
+        color: white;
+    }
+    .gif {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background-repeat: no-repeat;
+        background-position: center center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+    .show-mouse {
+        cursor: default;
+    }
+
+    .controls {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    .controls button {
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+        color: #fff;
+        background-color: rgba(48, 48, 48, 0.7);
+        border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Gif Display -->
+    <div id="gif" class="gif" onclick="toggleControlView()">
+    </div>
+
+    <!-- Toggleable Buttons -->
+    <div id="controls" class="controls" onclick="favGif()">
+      <button type="button" onclick="next()">
+        <i class="fa fa-step-forward fa-2x" aria-hidden="true"></i>
+      </button>
+      <button type="button" onclick="closeUp()">
+        <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <script>
+    var interval;
+    var gifUrl;
+
+    function slideshow() {
+        $.support.cors = true;
+        $.getJSON("http://tv.giphy.com/v1/gifs/tv?api_key=CW27AW0nlp5u0&tag=giphytv", null, function(response) {
+            var id = response.data.id;
+            var image = response.data.image_original_url;
+
+            $('#gif').css('background-image', 'url(' + image + ')');
+
+            gifUrl = 'http://giphy.com/gifs/' + id;
+
+        });
+    };
+
+    function next() {
+        clearInterval(interval);
+        slideshow();
+        interval = setInterval(slideshow, 7000);
+    }
+
+    function closeUp() {
+        const remote = require('electron').remote;
+        var window = remote.getCurrentWindow();
+        window.close();
+    }
+
+    function toggleControlView() {
+        $('#controls').toggle(function() {
+          $('#gif').toggleClass('show-mouse');
+        });
+    }
+
+    $('#controls').hide();
+    interval = setInterval(slideshow, 7000);
+
+    slideshow();
+  </script>
+
+</body>
+</html>

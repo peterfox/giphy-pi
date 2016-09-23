@@ -10,13 +10,13 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 480, frame: false})
+  mainWindow = new BrowserWindow({width: 800, height: 480, kiosk: true})
 
   // and load the index.html of the app.
-  mainWindow.loadURL(`http://tv.giphy.com/`)
+  mainWindow.loadURL(`file://${__dirname}/content/index.html`)
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
